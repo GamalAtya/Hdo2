@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هدوء - مساعدك وقت القلق</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #2a3441;
+    --sage: #7fb3a0;
+    --sage-light: #a8cfc2;
+    --sage-dim: #4a7a6a;
+    --gold: #c9a96e;
+    --text: #e8edf2;
+    --text-muted: #8b9bb0;
+    --danger: #e07070;
+    --radius: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    right: -30%;
+    width: 80vw;
+    height: 80vw;
+    background: radial-gradient(circle, rgba(127,179,160,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -40%;
+    left: -20%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(201,169,110,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 20px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 50px 0 30px;
+  }
+
+  .logo {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--sage-light);
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .logo span {
+    color: var(--gold);
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* Screens */
+  .screen { display: none; animation: fadeIn 0.4s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SOS Button */
+  .sos-section {
+    text-align: center;
+    margin: 10px 0 30px;
+  }
+
+  .sos-btn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid var(--danger);
+    background: rgba(224,112,112,0.08);
+    color: var(--danger);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(224,112,112,0.1);
+  }
+
+  .sos-btn:hover {
+    background: rgba(224,112,112,0.18);
+    box-shadow: 0 0 60px rgba(224,112,112,0.25);
+    transform: scale(1.04);
+  }
+
+  .sos-btn .sos-icon { font-size: 2rem; }
+  .sos-btn .sos-text { font-size: 1rem; }
+  .sos-btn .sos-sub { font-size: 0.75rem; color: rgba(224,112,112,0.7); font-weight: 300; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .card:hover {
+    border-color: var(--sage-dim);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .card-icon.sage { background: rgba(127,179,160,0.15); }
+  .card-icon.gold { background: rgba(201,169,110,0.15); }
+  .card-icon.blue { background: rgba(100,150,200,0.15); }
+  .card-icon.purple { background: rgba(160,120,200,0.15); }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-weight: 300;
+  }
+
+  .section-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 24px 0 12px;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: rgba(13,17,23,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0 20px;
+    z-index: 100;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 18px;
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+
+  .nav-btn .nav-icon { font-size: 1.3rem; }
+  .nav-btn.active { color: var(--sage-light); }
+  .nav-btn:hover { color: var(--sage); }
+
+  /* ===== BREATHING SCREEN ===== */
+  .breathing-container {
+    text-align: center;
+    padding: 30px 0;
+  }
+
+  .breathing-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .breathing-sub {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-bottom: 50px;
+  }
+
+  .breathing-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .breath-option {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .breath-option.active, .breath-option:hover {
+    border-color: var(--sage);
+    color: var(--sage-light);
+    background: rgba(127,179,160,0.1);
+  }
+
+  .breath-circle-wrap {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 30px;
+  }
+
+  .breath-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--sage-dim);
+    opacity: 0.3;
+  }
+
+  .breath-circle {
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(168,207,194,0.25), rgba(127,179,160,0.1));
+    border: 1.5px solid rgba(127,179,160,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s linear;
+  }
+
+  .breath-phase {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--sage-light);
+    text-align: center;
+  }
+
+  .breath-count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+
+  .breath-start-btn {
+    padding: 14px 50px;
+    border-radius: 40px;
+    border: none;
+    background: linear-gradient(135deg, var(--sage-dim), var(--sage));
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .breath-start-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 30px rgba(127,179,160,0.3);
+  }
+
+  .breath-cycles {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 20px;
+  }
+
+  /* ===== GROUNDING SCREEN ===== */
+  .grounding-container { padding: 20px 0; }
+
+  .grounding-intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .grounding-intro p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .sense-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 12px;
+    transition: all 0.3s;
+  }
+
+  .sense-step.done {
+    border-color: var(--sage-dim);
+    background: rgba(127,179,160,0.06);
+  }
+
+  .sense-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .sense-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(127,179,160,0.15);
+    border: 1px solid var(--sage-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--sage);
+    flex-shrink: 0;
+  }
+
+  .sense-step.done .sense-num {
+    background: var(--sage-dim);
+    color: #fff;
+  }
+
+  .sense-title { font-size: 1rem; font-weight: 600; }
+  .sense-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+  .sense-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sense-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+
+  .sense-input:focus { border-color: var(--sage-dim); }
+  .sense-input::placeholder { color: var(--text-muted); }
+
+  .sense-done-btn {
+    margin-top: 12px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--sage-dim);
+    background: rgba(127,179,160,0.1);
+    color: var(--sage-light);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sense-done-btn:hover { background: rgba(127,179,160,0.2); }
+
+  .grounding-complete {
+    text-align: center;
+    padding: 30px;
+    background: var(--surface);
+    border: 1px solid var(--sage-dim);
+    border-radius: var(--radius);
+    margin-top: 20px;
+    display: none;
+  }
+
+  .grounding-complete.show { display: block; animation: fadeIn 0.4s ease; }
+  .grounding-complete h3 { font-size: 1.3rem; color: var(--sage-light); margin-bottom: 10px; }
+  .grounding-complete p { color: var(--text-muted); font-size: 0.9rem; }
+
+  /* ===== MESSAGES SCREEN ===== */
+  .messages-container { padding: 20px 0; }
+
+  .message-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .message-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--sage);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .message-card.gold::before { background: var(--gold); }
+
+  .message-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .message-author {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-weight: 300;
+  }
+
+  .new-message-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--border);
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+  }
+
+  .new-message-btn:hover {
+    border-color: var(--sage-dim);
+    color: var(--sage-light);
+    background: rgba(127,179,160,0.05);
+  }
+
+  /* ===== TRACKER SCREEN ===== */
+  .tracker-container { padding: 20px 0; }
+
+  .tracker-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--sage-light);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .log-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, rgba(127,179,160,0.2), rgba(127,179,160,0.1));
+    border: 1px solid var(--sage-dim);
+    color: var(--sage-light);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-bottom: 20px;
+  }
+
+  .log-btn:hover {
+    background: linear-gradient(135deg, rgba(127,179,160,0.3), rgba(127,179,160,0.15));
+    transform: translateY(-1px);
+  }
+
+  .log-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 0 0;
+  }
+
+  .log-modal.open { display: flex; }
+
+  .log-sheet {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--border);
+    padding: 30px 24px 40px;
+    width: 100%;
+    max-width: 480px;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .log-sheet h3 { font-size: 1.2rem; margin-bottom: 6px; }
+  .log-sheet p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; }
+
+  .intensity-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .intensity-btns {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .intensity-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .intensity-btn.sel { border-color: var(--sage); background: rgba(127,179,160,0.15); color: var(--sage-light); }
+
+  .log-note {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    resize: none;
+    height: 80px;
+    margin-bottom: 20px;
+    text-align: right;
+  }
+
+  .log-note:focus { border-color: var(--sage-dim); }
+  .log-note::placeholder { color: var(--text-muted); }
+
+  .log-submit {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--sage-dim);
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .log-submit:hover { background: var(--sage); }
+
+  .log-cancel {
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius);
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .entries-list { margin-top: 10px; }
+
+  .entry-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .entry-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .entry-dot.low { background: var(--sage); }
+  .entry-dot.med { background: var(--gold); }
+  .entry-dot.high { background: var(--danger); }
+
+  .entry-info { flex: 1; }
+  .entry-time { font-size: 0.78rem; color: var(--text-muted); }
+  .entry-intensity { font-size: 0.88rem; font-weight: 500; margin-top: 2px; }
+  .entry-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Breathing animation */
+  @keyframes breatheIn {
+    from { transform: scale(0.85); }
+    to { transform: scale(1.15); }
+  }
+
+  @keyframes breatheHold {
+    from { transform: scale(1.15); }
+    to { transform: scale(1.15); }
+  }
+
+  @keyframes breatheOut {
+    from { transform: scale(1.15); }
+    to { transform: scale(0.85); }
+  }
+
+  .breathing .breath-circle { animation: breatheIn 4s ease-in-out forwards; }
+
+  .pulse-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(127,179,160,0.2);
+    animation: pulseOut 3s ease-out infinite;
+    opacity: 0;
+  }
+
+  @keyframes pulseOut {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="logo">هُدُوء <span>✦</span></div>
+    <div class="subtitle">مساعدك في لحظات القلق</div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="sos-section">
+      <button class="sos-btn" onclick="startSOS()">
+        <span class="sos-icon">🫁</span>
+        <span class="sos-text">أنا قلقان دلوقتي</span>
+        <span class="sos-sub">ابدأ من هنا</span>
+      </button>
+    </div>
+
+    <div class="section-label">أدوات الهدوء</div>
+
+    <div class="card" onclick="goTo('breathing')">
+      <div class="card-header">
+        <div class="card-icon sage">🫁</div>
+        <div>
+          <div class="card-title">تمارين التنفس</div>
+          <div class="card-desc">تنفس معنا وهدّي نفسك</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick="goTo('grounding')">
+      <div class="card-header">
+        <div class="card-icon gold">👁️</div>
+        <div>
+          <div class="card-title">تأريض الحواس</div>
+          <div class="card-desc">تقنية ٥-٤-٣-٢-١ ترجعك للحظة</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick="goTo('messages')">
+      <div class="card-header">
+        <div class="card-icon blue">💙</div>
+        <div>
+          <div class="card-title">رسائل طمأنينة</div>
+          <div class="card-desc">كلام بيهدّيك وقت الأزمة</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick="goTo('tracker')">
+      <div class="card-header">
+        <div class="card-icon purple">📊</div>
+        <div>
+          <div class="card-title">تتبع نوباتك</div>
+          <div class="card-desc">سجّل وافهم نمط قلقك</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREATHING SCREEN -->
+  <div class="screen" id="screen-breathing">
+    <div class="breathing-container">
+      <div class="breathing-title">تمرين التنفس</div>
+      <div class="breathing-sub">اختار الأسلوب اللي يريحك</div>
+
+      <div class="breathing-options">
+        <button class="breath-option active" data-mode="4-4-6">٤-٤-٦ هادي</button>
+        <button class="breath-option" data-mode="4-7-8">٤-٧-٨ نوم</button>
+        <button class="breath-option" data-mode="box">مربع</button>
+      </div>
+
+      <div class="breath-circle-wrap">
+        <div class="breath-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="breath-circle" id="breathCircle">
+          <div class="breath-phase">
+            <span class="breath-count" id="breathCount">٤</span>
+            <span id="breathPhase">ابدأ</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="breath-start-btn" id="breathBtn" onclick="toggleBreath()">ابدأ التنفس</button>
+      <div class="breath-cycles" id="cycleCount" style="display:none">دورة <span id="cycleNum">١</span> من ٥</div>
+    </div>
+  </div>
+
+  <!-- GROUNDING SCREEN -->
+  <div class="screen" id="screen-grounding">
+    <div class="grounding-container">
+      <div class="grounding-intro">
+        <p>دلوقتي ركّز في اللي حواليك.<br>ده هيرجعك للحظة الحالية ويبعد الأفكار.</p>
+      </div>
+
+      <div class="sense-step" id="step-5">
+        <div class="sense-header">
+          <div class="sense-num" id="num-5">٥</div>
+          <div>
+            <div class="sense-title">👁️ شايف ٥ حاجات</div>
+            <div class="sense-desc">اكتب ٥ حاجات شايفها دلوقتي</div>
+          </div>
+        </div>
+        <div class="sense-inputs" id="inputs-5">
+          <input class="sense-input" placeholder="حاجة شايفها...">
+          <input class="sense-input" placeholder="حاجة تانية...">
+          <input class="sense-input" placeholder="حاجة تالتة...">
+          <input class="sense-input" placeholder="حاجة رابعة...">
+          <input class="sense-input" placeholder="حاجة خامسة...">
+        </div>
+        <button class="sense-done-btn" onclick="doneStep('5')">✓ خلصت</button>
+      </div>
+
+      <div class="sense-step" id="step-4">
+        <div class="sense-header">
+          <div class="sense-num" id="num-4">٤</div>
+          <div>
+            <div class="sense-title">🤚 لامس ٤ حاجات</div>
+            <div class="sense-desc">ألمس ٤ حاجات وحسّ بملمسهم</div>
+          </div>
+        </div>
+        <div class="sense-inputs" id="inputs-4">
+          <input class="sense-input" placeholder="ملمس حاجة...">
+          <input class="sense-input" placeholder="ملمس تانية...">
+          <input class="sense-input" placeholder="ملمس تالتة...">
+          <input class="sense-input" placeholder="ملمس رابعة...">
+        </div>
+        <button class="sense-done-btn" onclick="doneStep('4')">✓ خلصت</button>
+      </div>
+
+      <div class="sense-step" id="step-3">
+        <div class="sense-header">
+          <div class="sense-num" id="num-3">٣</div>
+          <div>
+            <div class="sense-title">👂 سامع ٣ أصوات</div>
+            <div class="sense-desc">ركّز وإيه الأصوات اللي حواليك</div>
+          </div>
+        </div>
+        <div class="sense-inputs" id="inputs-3">
+          <input class="sense-input" placeholder="صوت...">
+          <input class="sense-input" placeholder="صوت تاني...">
+          <input class="sense-input" placeholder="صوت تالت...">
+        </div>
+        <button class="sense-done-btn" onclick="doneStep('3')">✓ خلصت</button>
+      </div>
+
+      <div class="sense-step" id="step-2">
+        <div class="sense-header">
+          <div class="sense-num" id="num-2">٢</div>
+          <div>
+            <div class="sense-title">👃 شامّ ٢ روايح</div>
+            <div class="sense-desc">ركّز مع أي ريحة حواليك</div>
+          </div>
+        </div>
+        <div class="sense-inputs" id="inputs-2">
+          <input class="sense-input" placeholder="ريحة...">
+          <input class="sense-input" placeholder="ريحة تانية...">
+        </div>
+        <button class="sense-done-btn" onclick="doneStep('2')">✓ خلصت</button>
+      </div>
+
+      <div class="sense-step" id="step-1">
+        <div class="sense-header">
+          <div class="sense-num" id="num-1">١</div>
+          <div>
+            <div class="sense-title">👅 حاسس بطعم ١ حاجة</div>
+            <div class="sense-desc">إيه الطعم اللي في بقك دلوقتي</div>
+          </div>
+        </div>
+        <div class="sense-inputs" id="inputs-1">
+          <input class="sense-input" placeholder="الطعم...">
+        </div>
+        <button class="sense-done-btn" onclick="doneStep('1')">✓ خلصت</button>
+      </div>
+
+      <div class="grounding-complete" id="groundingComplete">
+        <div style="font-size:2.5rem;margin-bottom:14px">🌿</div>
+        <h3>برافو عليك!</h3>
+        <p>رجعت للحظة الحالية.<br>القلق كان مجرد أفكار، وأنت أقوى منها.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGES SCREEN -->
+  <div class="screen" id="screen-messages">
+    <div class="messages-container">
+      <button class="new-message-btn" onclick="getNewMessage()">🔄 رسالة جديدة</button>
+      <div id="messagesList"></div>
+    </div>
+  </div>
+
+  <!-- TRACKER SCREEN -->
+  <div class="screen" id="screen-tracker">
+    <div class="tracker-container">
+      <div class="tracker-summary">
+        <div class="stat-card">
+          <span class="stat-num" id="totalCount">٠</span>
+          <div class="stat-label">نوبة هذا الأسبوع</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="avgIntensity">—</span>
+          <div class="stat-label">متوسط الشدة</div>
+        </div>
+      </div>
+
+      <button class="log-btn" onclick="openLog()">+ سجّل نوبة دلوقتي</button>
+
+      <div class="section-label">آخر النوبات</div>
+      <div class="entries-list" id="entriesList">
+        <div style="text-align:center;color:var(--text-muted);font-size:0.88rem;padding:30px 0">
+          لسه مسجلتش أي نوبات<br>
+          <span style="font-size:0.8rem;opacity:0.6">التسجيل بيساعدك تفهم نفسك</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
+    <span class="nav-icon">🏠</span>
+    <span>الرئيسية</span>
+  </button>
+  <button class="nav-btn" id="nav-breathing" onclick="goTo('breathing')">
+    <span class="nav-icon">🫁</span>
+    <span>تنفس</span>
+  </button>
+  <button class="nav-btn" id="nav-grounding" onclick="goTo('grounding')">
+    <span class="nav-icon">👁️</span>
+    <span>تأريض</span>
+  </button>
+  <button class="nav-btn" id="nav-messages" onclick="goTo('messages')">
+    <span class="nav-icon">💙</span>
+    <span>طمأنينة</span>
+  </button>
+  <button class="nav-btn" id="nav-tracker" onclick="goTo('tracker')">
+    <span class="nav-icon">📊</span>
+    <span>تتبع</span>
+  </button>
+</nav>
+
+<!-- Log Modal -->
+<div class="log-modal" id="logModal">
+  <div class="log-sheet">
+    <h3>سجّل نوبة القلق</h3>
+    <p>ده بيساعدك تفهم نمط قلقك مع الوقت</p>
+
+    <div class="intensity-label">شدة القلق</div>
+    <div class="intensity-btns">
+      <button class="intensity-btn" onclick="selectIntensity('خفيف', this)">خفيف</button>
+      <button class="intensity-btn" onclick="selectIntensity('متوسط', this)">متوسط</button>
+      <button class="intensity-btn" onclick="selectIntensity('شديد', this)">شديد</button>
+    </div>
+
+    <textarea class="log-note" id="logNote" placeholder="ملاحظة اختيارية... (كنت فين؟ حصل إيه؟)"></textarea>
+
+    <button class="log-submit" onclick="submitLog()">سجّل</button>
+    <button class="log-cancel" onclick="closeLog()">إلغاء</button>
+  </div>
+</div>
+
+<script>
+// ===== NAVIGATION =====
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  const navBtn = document.getElementById('nav-' + screen);
+  if (navBtn) navBtn.classList.add('active');
+
+  if (screen === 'messages' && document.getElementById('messagesList').children.length === 0) {
+    showInitialMessages();
+  }
+}
+
+function startSOS() {
+  goTo('breathing');
+  setTimeout(() => toggleBreath(), 500);
+}
+
+// ===== BREATHING =====
+const modes = {
+  '4-4-6': [{ phase: 'شهيق', dur: 4 }, { phase: 'احتبس', dur: 4 }, { phase: 'زفير', dur: 6 }],
+  '4-7-8': [{ phase: 'شهيق', dur: 4 }, { phase: 'احتبس', dur: 7 }, { phase: 'زفير', dur: 8 }],
+  'box':   [{ phase: 'شهيق', dur: 4 }, { phase: 'احتبس', dur: 4 }, { phase: 'زفير', dur: 4 }, { phase: 'احتبس', dur: 4 }]
+};
+
+let breathMode = '4-4-6';
+let breathRunning = false;
+let breathInterval = null;
+let currentPhaseIdx = 0;
+let currentSec = 0;
+let cycleCount = 0;
+
+document.querySelectorAll('.breath-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.breath-option').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    breathMode = btn.dataset.mode;
+    if (breathRunning) stopBreath();
+  });
+});
+
+function toggleBreath() {
+  if (breathRunning) stopBreath();
+  else startBreath();
+}
+
+const toArabicNum = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+function startBreath() {
+  breathRunning = true;
+  cycleCount = 0;
+  currentPhaseIdx = 0;
+  currentSec = modes[breathMode][0].dur;
+  document.getElementById('breathBtn').textContent = 'إيقاف';
+  document.getElementById('cycleCount').style.display = 'block';
+  document.getElementById('cycleNum').textContent = toArabicNum(1);
+  runPhase();
+}
+
+function runPhase() {
+  const phases = modes[breathMode];
+  const phase = phases[currentPhaseIdx];
+  const circle = document.getElementById('breathCircle');
+  const phaseEl = document.getElementById('breathPhase');
+  const countEl = document.getElementById('breathCount');
+
+  phaseEl.textContent = phase.phase;
+  currentSec = phase.dur;
+  countEl.textContent = toArabicNum(currentSec);
+
+  // animate circle
+  circle.style.transition = `transform ${phase.dur}s ease-in-out`;
+  if (phase.phase === 'شهيق') {
+    circle.style.transform = 'scale(1.18)';
+  } else if (phase.phase === 'زفير') {
+    circle.style.transform = 'scale(0.85)';
+  } else {
+    // hold - keep current
+  }
+
+  breathInterval = setInterval(() => {
+    currentSec--;
+    countEl.textContent = toArabicNum(currentSec);
+    if (currentSec <= 0) {
+      clearInterval(breathInterval);
+      currentPhaseIdx++;
+      if (currentPhaseIdx >= phases.length) {
+        currentPhaseIdx = 0;
+        cycleCount++;
+        document.getElementById('cycleNum').textContent = toArabicNum(cycleCount + 1);
+        if (cycleCount >= 5) { stopBreath(); return; }
+      }
+      if (breathRunning) runPhase();
+    }
+  }, 1000);
+}
+
+function stopBreath() {
+  breathRunning = false;
+  clearInterval(breathInterval);
+  document.getElementById('breathBtn').textContent = 'ابدأ التنفس';
+  document.getElementById('cycleCount').style.display = 'none';
+  document.getElementById('breathPhase').textContent = 'ابدأ';
+  document.getElementById('breathCount').textContent = toArabicNum(modes[breathMode][0].dur);
+  document.getElementById('breathCircle').style.transform = 'scale(1)';
+}
+
+// ===== GROUNDING =====
+const steps = ['5', '4', '3', '2', '1'];
+
+function doneStep(num) {
+  const step = document.getElementById('step-' + num);
+  step.classList.add('done');
+  const numEl = document.getElementById('num-' + num);
+  numEl.textContent = '✓';
+
+  const idx = steps.indexOf(num);
+  if (idx === steps.length - 1) {
+    document.getElementById('groundingComplete').classList.add('show');
+    document.getElementById('groundingComplete').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// ===== MESSAGES =====
+const messages = [
+  { text: "القلق اللي بتحس بيه دلوقتي مش حقيقي زي ما بيحسسك. جسمك بيحاول يحميك، وده هيعدي.", type: 'sage' },
+  { text: "أنت مريت بنوبات زي دي قبل كده وفضلت واقف. دلوقتي مش مختلف.", type: 'gold' },
+  { text: "تنفس. الهواء موجود. أنت موجود. اللحظة دي هتعدي.", type: 'sage' },
+  { text: "مش لازم تتحكم في كل حاجة دلوقتي. خلّي اللحظة تعدي.", type: 'gold' },
+  { text: "جسمك قوي. دقات القلب دي مش خطر، ده جسمك بيشتغل معك.", type: 'sage' },
+  { text: "القلق بيكدب عليك. الكارثة اللي بيوصفها مش حتيجي.", type: 'gold' },
+  { text: "مش محتاج تحل أي حاجة دلوقتي. كل اللي محتاجه تاخد نفس واحد.", type: 'sage' },
+  { text: "حتى لو مش حاسس بيه دلوقتي، أنت بتتقدم وبتتقوى.", type: 'gold' },
+];
+
+let messageIndex = 0;
+
+function showInitialMessages() {
+  const list = document.getElementById('messagesList');
+  list.innerHTML = '';
+  [0, 1, 2].forEach(i => {
+    const m = messages[i];
+    list.appendChild(createMessageEl(m));
+  });
+  messageIndex = 3;
+}
+
+function createMessageEl(m) {
+  const div = document.createElement('div');
+  div.className = `message-card ${m.type}`;
+  div.innerHTML = `<div class="message-text">"${m.text}"</div><div class="message-author">هُدُوء ✦</div>`;
+  div.style.animation = 'fadeIn 0.4s ease';
+  return div;
+}
+
+function getNewMessage() {
+  const list = document.getElementById('messagesList');
+  const m = messages[messageIndex % messages.length];
+  messageIndex++;
+  const el = createMessageEl(m);
+  list.insertBefore(el, list.firstChild);
+  if (list.children.length > 5) list.removeChild(list.lastChild);
+}
+
+// ===== TRACKER =====
+let entries = [];
+let selectedIntensity = '';
+
+function selectIntensity(val, btn) {
+  selectedIntensity = val;
+  document.querySelectorAll('.intensity-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function openLog() {
+  document.getElementById('logModal').classList.add('open');
+  selectedIntensity = '';
+  document.querySelectorAll('.intensity-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('logNote').value = '';
+}
+
+function closeLog() {
+  document.getElementById('logModal').classList.remove('open');
+}
+
+function submitLog() {
+  if (!selectedIntensity) { alert('اختار شدة القلق الأول'); return; }
+  const note = document.getElementById('logNote').value;
+  const entry = {
+    time: new Date(),
+    intensity: selectedIntensity,
+    note: note
+  };
+  entries.unshift(entry);
+  closeLog();
+  updateTracker();
+}
+
+const arabicTime = (date) => {
+  const h = date.getHours();
+  const m = String(date.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'م' : 'ص';
+  return `${toArabicNum(h % 12 || 12)}:${toArabicNum(parseInt(m))} ${ampm}`;
+};
+
+function updateTracker() {
+  document.getElementById('totalCount').textContent = toArabicNum(entries.length);
+
+  const intensityMap = { 'خفيف': 1, 'متوسط': 2, 'شديد': 3 };
+  const avg = entries.length ? entries.reduce((s, e) => s + intensityMap[e.intensity], 0) / entries.length : 0;
+  const avgLabels = { 1: 'خفيف', 2: 'متوسط', 3: 'شديد' };
+  document.getElementById('avgIntensity').textContent = avg ? avgLabels[Math.round(avg)] : '—';
+
+  const list = document.getElementById('entriesList');
+  if (entries.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.88rem;padding:30px 0">لسه مسجلتش أي نوبات<br><span style="font-size:0.8rem;opacity:0.6">التسجيل بيساعدك تفهم نفسك</span></div>';
+    return;
+  }
+
+  const dotClass = { 'خفيف': 'low', 'متوسط': 'med', 'شديد': 'high' };
+  list.innerHTML = entries.map(e => `
+    <div class="entry-item">
+      <div class="entry-dot ${dotClass[e.intensity]}"></div>
+      <div class="entry-info">
+        <div class="entry-time">${arabicTime(e.time)}</div>
+        <div class="entry-intensity">قلق ${e.intensity}</div>
+        ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Close modal on backdrop click
+document.getElementById('logModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLog();
+});
+</script>
+</body>
+</html>
