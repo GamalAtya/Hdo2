@@ -1198,6 +1198,7 @@ function submitLog() {
     note: note
   };
   entries.unshift(entry);
+  localStorage.setItem('hudoo_entries', JSON.stringify(entries));
   closeLog();
   updateTracker();
 }
