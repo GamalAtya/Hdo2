@@ -1169,8 +1169,15 @@ function getNewMessage() {
 }
 
 // ===== TRACKER =====
-let entries = [];
 let selectedIntensity = '';
+let entries = [];
+
+try {
+  const saved = localStorage.getItem('hudoo_entries');
+  if (saved) {
+    entries = JSON.parse(saved).map(e => ({ ...e, time: new Date(e.time) }));
+  }
+} catch(e) { entries = []; }
 
 function selectIntensity(val, btn) {
   selectedIntensity = val;
@@ -1241,6 +1248,9 @@ function updateTracker() {
 document.getElementById('logModal').addEventListener('click', function(e) {
   if (e.target === this) closeLog();
 });
+
+// تحميل البيانات بعد ما الصفحة تكمل
+if (entries.length) updateTracker();
 </script>
 </body>
 </html>
